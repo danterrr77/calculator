@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Текстовый калькулятор</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Текстовый калькулятор</h1>
+            <p class="subtitle">Преобразуйте текстовые числа в цифры и выполняйте вычисления</p>
+        </header>
+
+        <main>
+            <div class="calculator-card">
+                <div class="form-section">
+                    <div class="section-title">Входные данные</div>
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <div class="form-label"><i class="fas fa-keyboard"></i> Первое число (текстом):</div>
+                            <input type="text" id="number1" class="form-input" placeholder="например: сто двадцать пять">
+                            <div class="field-hint">Примеры: "ноль", "десять", "двадцать пять", "сто тридцать семь"</div>
+                        </div>
+                        
+
+                        <div class="form-group"></div>
+                        
+                        <div class="form-group full-width">
+                            <div class="form-label"><i class="fas fa-sliders-h"></i> Операция:</div>
+                            <div class="operations-grid">
+                                <button class="op-btn active" data-operation="add">+ Сложение</button>
+                                <button class="op-btn" data-operation="subtract">- Вычитание</button>
+                                <button class="op-btn" data-operation="multiply">× Умножение</button>
+                                <button class="op-btn" data-operation="divide">÷ Деление</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-label"><i class="fas fa-keyboard"></i> Второе число (текстом):</div>
+                            <input type="text" id="number2" class="form-input" placeholder="например: пятьдесят">
+                            <div class="field-hint">Примеры: "пять", "сорок", "двести", "тысяча"</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button id="calculate-btn" class="calculate-btn">
+                        <i class="fas fa-calculator"></i> Вычислить
+                    </button>
+                    <button id="clear-btn" class="clear-btn">
+                        <i class="fas fa-broom"></i> Очистить
+                    </button>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-title"><i class="fas fa-poll"></i> Результат вычислений</div>
+                    <div class="result-section">
+                        <div class="conversion-steps">
+                            <div class="step">
+                                <span class="step-label">Число 1:</span>
+                                <span id="conversion1" class="step-result">—</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-label">Операция:</span>
+                                <span id="operation-display" class="step-result">—</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-label">Число 2:</span>
+                                <span id="conversion2" class="step-result">—</span>
+                            </div>
+                        </div>
+                        
+                        <div class="final-result">
+                            <div class="result-label">Итоговый результат</div>
+                            <div id="result" class="result-value">—</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-title"><i class="fas fa-exclamation-triangle"></i> Обработка ошибок</div>
+                    <div class="error-section">
+                        <div id="error-display" class="error-message no-error">
+                            Нет ошибок. Введите данные для вычислений.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-title"><i class="fas fa-history"></i> История вычислений</div>
+                    <div class="history-section">
+                        <div id="history-list" class="history-list">
+                            <div class="history-item">История вычислений пуста</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fas fa-info-circle"></i> Информация о приложении</h3>
+                <p>Это веб-приложение преобразует текстовое представление чисел в цифровой формат и выполняет математические операции.</p>
+                <p>Приложение корректно обрабатывает исключительные ситуации:</p>
+                <ul>
+                    <li>Некорректный ввод текстовых чисел</li>
+                    <li>Деление на ноль</li>
+                    <li>Пустые поля ввода</li>
+                    <li>Неподдерживаемые слова</li>
+                </ul>
+                <p>Поддерживаются числа от 0 до 999 999.</p>
+                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #b9b2a3;">
+                    <div class="step">
+                        <span class="step-label">Текущее время:</span>
+                        <span id="current-time" class="step-result">—</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Практическая работа №3. Анализ и обеспечение обработки исключительных ситуаций</p>
+            <p class="timestamp" id="current-time-footer"></p>
+        </footer>
+    </div>
+
+    <script src="script.js"> </script>
+</body>
+</html>
