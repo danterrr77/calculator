@@ -1,4 +1,3 @@
-
 const numbers = {
     'ноль': 0, 'один': 1, 'одна': 1, 'два': 2, 'две': 2, 'три': 3, 'четыре': 4,
     'пять': 5, 'шесть': 6, 'семь': 7, 'восемь': 8, 'девять': 9,
@@ -12,7 +11,6 @@ const numbers = {
     'тысяча': 1000, 'тысячи': 1000, 'тысяч': 1000
 };
 
-
 const timeUnits = {
     'секунда': 1, 'секунды': 1, 'секунд': 1, 'с': 1,
     'минута': 60, 'минуты': 60, 'минут': 60, 'мин': 60, 'м': 60,
@@ -21,7 +19,6 @@ const timeUnits = {
 
 let currentOperation = 'add';
 let history = [];
-
 
 const time1Input = document.getElementById('time1');
 const time2Input = document.getElementById('time2');
@@ -43,7 +40,6 @@ const currentSecondsSpan = document.getElementById('current-seconds');
 const infoDateSpan = document.getElementById('info-date');
 const infoTimeSpan = document.getElementById('info-time');
 
-
 function updateDateTime() {
     const now = new Date();
     const dateStr = now.toLocaleDateString('ru-RU');
@@ -59,7 +55,6 @@ function updateDateTime() {
 updateDateTime();
 setInterval(updateDateTime, 1000);
 
-
 function timeTextToSeconds(text) {
     try {
         if (!text || text.trim() === '') {
@@ -68,13 +63,13 @@ function timeTextToSeconds(text) {
         
         let cleanedText = text.toLowerCase().trim();
         
-
+        // Специальные фразы
         if (cleanedText === 'полминуты') return 30;
         if (cleanedText === 'полчаса') return 1800;
         if (cleanedText === 'полторы минуты') return 90;
         if (cleanedText === 'полтора часа') return 5400;
         
-
+        // Десятичный формат (2.5 часа)
         const decimalMatch = cleanedText.match(/^(\d+(?:\.\d+)?)\s*(час|часа|часов|ч|минута|минуты|минут|мин|секунда|секунды|секунд|с)$/);
         if (decimalMatch) {
             const value = parseFloat(decimalMatch[1]);
@@ -82,7 +77,12 @@ function timeTextToSeconds(text) {
             let multiplier = 1;
             if (unit === 'час' || unit === 'часа' || unit === 'часов' || unit === 'ч') multiplier = 3600;
             else if (unit === 'минута' || unit === 'минуты' || unit === 'минут' || unit === 'мин') multiplier = 60;
-            return Math.round(value * multiplier);
+            const result = Math.round(value * multiplier);
+            // Проверка на слишком большое время для десятичного формата
+            if (result > 31536000) {
+                throw new Error('Слишком большое время');
+            }
+            return result;
         }
         
         let totalSeconds = 0;
@@ -115,8 +115,9 @@ function timeTextToSeconds(text) {
             throw new Error('Не удалось распознать время');
         }
         
+        // Проверка на слишком большое время
         if (totalSeconds > 31536000) {
-            throw new Error('Слишком большое время');
+            throw new Error('Слишком большое время (более 365 дней)');
         }
         
         return totalSeconds;
@@ -125,7 +126,6 @@ function timeTextToSeconds(text) {
         throw error;
     }
 }
-
 
 function textToNumber(text) {
     try {
@@ -136,7 +136,11 @@ function textToNumber(text) {
         const cleanedText = text.toLowerCase().trim();
         
         if (!isNaN(parseFloat(cleanedText))) {
-            return parseFloat(cleanedText);
+            const num = parseFloat(cleanedText);
+            if (num > 999999) {
+                throw new Error('Число превышает 999 999');
+            }
+            return num;
         }
         
         const words = cleanedText.split(/[\s-]+/);
@@ -162,12 +166,16 @@ function textToNumber(text) {
             }
         }
         total += current;
+        
+        if (total > 999999) {
+            throw new Error('Число превышает 999 999');
+        }
+        
         return total;
     } catch (error) {
         throw error;
     }
 }
-
 
 function formatSecondsToHMS(totalSeconds) {
     const hours = Math.floor(totalSeconds / 3600);
@@ -175,7 +183,6 @@ function formatSecondsToHMS(totalSeconds) {
     const seconds = totalSeconds % 60;
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
-
 
 function formatSecondsToText(totalSeconds) {
     const hours = Math.floor(totalSeconds / 3600);
@@ -217,7 +224,6 @@ function getSecondWord(seconds) {
     return 'секунд';
 }
 
-
 function performOperation(seconds1, value2, operation) {
     try {
         let resultSeconds;
@@ -251,7 +257,6 @@ function performOperation(seconds1, value2, operation) {
     }
 }
 
-
 function calculate() {
     try {
         errorDisplayDiv.classList.remove('error');
@@ -267,7 +272,6 @@ function calculate() {
             throw new Error('Введите второе время или число');
         }
         
-
         let seconds1;
         try {
             seconds1 = timeTextToSeconds(time1Text);
@@ -276,7 +280,6 @@ function calculate() {
             throw new Error(`Первое время: ${e.message}`);
         }
         
-
         let value2;
         let isTimeValue = false;
         let value2Display = '';
@@ -296,14 +299,12 @@ function calculate() {
             }
         }
         
-
         const operationSymbols = {
             add: '+', subtract: '-', multiply: '×', divide: '÷'
         };
         
         let resultSeconds = performOperation(seconds1, value2, currentOperation);
         
-
         displayTime1Span.innerHTML = `${formatSecondsToText(seconds1)} (${seconds1} сек)`;
         displayOperationSpan.innerHTML = `${operationSymbols[currentOperation]}`;
         displayTime2Span.innerHTML = isTimeValue ? `${formatSecondsToText(value2)} (${value2} сек)` : `${value2}`;
@@ -313,7 +314,6 @@ function calculate() {
         
         errorDisplayDiv.innerHTML = `<i class="fas fa-check-circle"></i> Вычисление выполнено! Результат: ${formatSecondsToText(resultSeconds)}`;
         
-
         addToHistory(time1Text, time2Text, seconds1, value2, operationSymbols[currentOperation], resultSeconds, isTimeValue);
         
     } catch (error) {
@@ -324,11 +324,9 @@ function calculate() {
         resultSecondsSpan.innerHTML = '—';
         resultFormattedSpan.innerHTML = '—';
         
-
         addErrorToHistory(error.message);
     }
 }
-
 
 function addToHistory(text1, text2, sec1, val2, operation, result, isTime) {
     const now = new Date();
@@ -376,7 +374,6 @@ function clearHistory() {
     }, 2000);
 }
 
-
 function clearForm() {
     time1Input.value = '';
     time2Input.value = '';
@@ -391,7 +388,6 @@ function clearForm() {
     errorDisplayDiv.classList.remove('error');
 }
 
-
 function setupOperationButtons() {
     const buttons = document.querySelectorAll('.op-btn');
     buttons.forEach(btn => {
@@ -404,7 +400,6 @@ function setupOperationButtons() {
         });
     });
 }
-
 
 function init() {
     setupOperationButtons();
